@@ -1,47 +1,50 @@
 class User < ActiveRecord::Base
-  attr_accessor   :password
+	attr_accessor  :password
   attr_accessible :email, :name, :password, :password_confirmation
 
-  validates :name,  :presence => true,
+   validates :name,  :presence => true,
   					:length   => { :maximum => 50 }
   validates :email, :presence => true ,
   					:uniqueness => { :case_sensitive => false }
 
-  validates :password, :presence => true,
+   validates :password, :presence => true,
   					   :confirmation => true, 
-  					   :length => { :within: => 6..40}		
+  					   :length => { :within => 6..40}	
 
- before_save :encrypt_password
+   before_save:encrypt_password
 
- def has_password?(submitted_password)
- 	encrypted_password == encrypt(submitted_password)
+    def has_password?(submitted_password)
+  encrypted_password == encrypt(submitted_password)
  end
 
- class << self
- 	def authenticate(email,submitted_password)
- 		user = find_by_email(email)
- 		return nil if user.nil?
- 		return user if user.has_password?(submitted_password)
- 	end
+  class << self
+  def authenticate(email,submitted_password)
+    user = find_by_email(email)
+    return nil if user.nil?
+    return user if user.has_password?(submitted_password)
+  end
+end
 
+   private
 
- private
-
- def encrypt_password
- 	self.salt = make_salt if new_record?
+ def encrypt_password 
+  self.salt = make_salt if new_record?
  	self.encrypted_password = encrypt(password)  
 
  	end
 
- 	def encrypt(string)
- 		secure_hash("#{salt}--#{string}") 
- 	end					   
- 	def make_salt
- 		secure_hash("#{Time.now.utc}--#{password}")
- 	end	
+  def encrypt(string)
+   secure_hash("#{salt}--#{string}") 
+  end
 
- 	def secure_hash(string)
- 		Digest::SHA2.hexdigest(string)
+  def secure_hash(string)
+    Digest::SHA2.hexdigest(string)
+  end
 
+  def make_salt
+    secure_hash("#{Time.now.utc}--#{password}")
+  end
 
 end
+
+

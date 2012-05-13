@@ -6,6 +6,7 @@ gem 'rails', '3.2.3'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2'
+gem 'gravatar_image_tag','0.1.0'
 
 
 # Gems used only for assets and not required
